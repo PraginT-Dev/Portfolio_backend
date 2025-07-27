@@ -2,6 +2,9 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+
 from .models import *
 from .serializers import *
 
@@ -30,7 +33,6 @@ I truly appreciate your support!
 
         return Response(serializer.errors, status=400)
 
-
 # 📄 Public Read APIs
 class SegmentList(generics.ListAPIView):
     queryset = Segment.objects.all()
@@ -50,3 +52,15 @@ class SkillListView(APIView):
         segments = Segment.objects.prefetch_related('skills').all()
         serializer = SegmentWithSkillsSerializer(segments, many=True, context={'request': request})
         return Response(serializer.data)
+
+# 🔐 TEMP: Admin password reset view
+class AdminPasswordResetView(APIView):
+    def get(self, request):
+        User = get_user_model()
+        try:
+            user = User.objects.get(username="admin")  # Replace with actual username if needed
+            user.set_password("newadminpass123")       # ✅ Replace with your new desired password
+            user.save()
+            return HttpResponse("✅ Admin password reset. Remove this route now!")
+        except User.DoesNotExist:
+            return HttpResponse("❌ Admin user not found.")
