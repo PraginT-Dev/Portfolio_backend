@@ -4,16 +4,15 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ SECRET_KEY & DEBUG from environment
-# You MUST set these in your .env locally and in Render's environment tab.
-SECRET_KEY = config("SECRET_KEY", default="unsafe-dev-key")  # Change in prod!
+# ✅ SECRET_KEY & DEBUG
+SECRET_KEY = config("SECRET_KEY", default="unsafe-dev-key")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-# ✅ Allow local + Render custom domains
+# ✅ ALLOWED_HOSTS
 ALLOWED_HOSTS = [
     'localhost', '127.0.0.1',
-    '192.168.0.103',           # your local IP (can remove if not needed)
-    '.onrender.com',           # for Render deployment
+    '192.168.0.103',  # optional, local
+    '.onrender.com',
 ]
 
 # ✅ Installed apps
@@ -30,11 +29,11 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
-# ✅ Middleware (WhiteNoise added later for static files)
+# ✅ Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← for Render static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,10 +61,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'portfolio_backend.wsgi.application'
 
-# ✅ DATABASE CONFIG — Uses DATABASE_URL from Render or local fallback
+# ✅ PostgreSQL via dj_database_url (Render sets DATABASE_URL automatically)
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://portfolio_user:your_secure_password@localhost:5432/portfolio_db'
+        default='postgresql://portfolio_user:your_secure_password@localhost:5432/portfolio_db',
+        conn_max_age=600
     )
 }
 
@@ -77,24 +77,24 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ✅ i18n
+# ✅ Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static & Media
+# ✅ Static & Media files
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # for Render collectstatic
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# ✅ CORS for frontend access
+# ✅ CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
-# ✅ Email Config
+# ✅ Email (SMTP config)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -103,7 +103,5 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# ✅ Default field
+# ✅ Default primary key field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
