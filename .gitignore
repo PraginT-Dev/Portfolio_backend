@@ -1,0 +1,21 @@
+# Python and Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+# Virtual environments
+venv/
+*.egg-info/
+
+# Sensitive config
+.env
+
+# Media & static (generated or uploaded)
+media/
+static/
+staticfiles/
+
+# OS / IDE
+.vscode/
+.DS_Store
