@@ -2,14 +2,11 @@ services:
   - type: web
     name: portfolio-backend
     env: python
-    buildCommand: |
-      pip install -r requirements.txt
-      python manage.py collectstatic --noinput
-      python manage.py migrate
+    buildCommand: ./build.sh         # 👈 use build.sh instead of inline steps
     startCommand: gunicorn portfolio_backend.wsgi:application
     envVars:
       - key: SECRET_KEY
-        value: your-super-secret-key      # ✅ change this in Render dashboard
+        value: your-super-secret-key      # ✅ change in Render dashboard
       - key: DEBUG
         value: false
       - key: EMAIL_HOST_USER
