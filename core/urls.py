@@ -3,7 +3,6 @@ from .views import (
     FeedbackView,
     SegmentList, CertificateList, ProjectList,
     SkillListView,
-    AdminPasswordResetView,  # temp
 )
 
 urlpatterns = [
@@ -11,8 +10,5 @@ urlpatterns = [
     path('segments/', SegmentList.as_view(), name='segments'),
     path('certificates/', CertificateList.as_view(), name='certificates'),
     path('projects/', ProjectList.as_view(), name='projects'),
-    path('skills/', SkillListView.as_view(), name='skills'),
-
-    # ⚠️ TEMP: Visit this once → then DELETE it immediately after resetting password
-    path('reset-admin/', AdminPasswordResetView.as_view(), name='reset-admin'),
+    path('skills/', SkillListView.as_view(), name='skills'),  # final route for frontend
 ]
