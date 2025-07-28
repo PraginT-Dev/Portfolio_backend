@@ -45,16 +45,13 @@ class FeedbackView(APIView):
 
             subject = "Thanks for connecting with me!"
             html_content = f"""
-            <p>Yo <strong>{name}</strong> 😄,</p>
-            <p>Thanks for reaching out — your message just made my inbox 10x cooler!</p>
-            <p>I’ve read your note, smiled a little, and nodded like a wise old owl 🦉.</p>
+            <p>Hey <strong>{name}</strong> 👋,</p>
+            <p>Your message has safely landed in my inbox (with a soft ‘thud’ and zero error codes—success! ✅).</p>
+            <p>I gave it a read, smiled like a human (because I totally am one 🤖), and made a mental note that you're awesome.</p>
             <p><strong>Your Message:</strong><br>{message_text}</p>
-            <p>Thanks, legend! Your message made my day—and possibly increased my dopamine by 5% 📈😂<br>
-            Let’s keep the bytes flowing and the bugs crashing!</p>
-            <p>Catch ya in the debug zone!<br>— Pragin T. 🐞💥</p>
-
+            <p>He’s currently busy wrangling pixels or debugging the matrix, but expect a proper reply from him soon! 🤓</p>
+            <p>Until then, stay cool and keep the vibes high!<br>— Pragin's Boty 🤖 </p>
             """
-
             try:
                 status_code, result = send_email_via_brevo(email, subject, html_content)
                 if status_code == 201:
