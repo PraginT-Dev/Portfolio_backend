@@ -40,9 +40,17 @@ class CertificateSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'image','verify_link' , 'created_at', 'segment', 'skills']
 
 class ProjectImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = ProjectImage
-        fields = '__all__'
+        fields = ['id', 'image']
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image and hasattr(obj.image, 'url'):
+            return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        return ''
 
 
 class ProjectSerializer(serializers.ModelSerializer):
