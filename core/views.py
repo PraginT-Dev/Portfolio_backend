@@ -1,14 +1,36 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
+from decouple import config
+import requests
 import logging
 
 from .models import *
 from .serializers import *
 
 logger = logging.getLogger(__name__)
+
+# ✅ Email Sending via Brevo API
+def send_email_via_brevo(to_email, subject, html_content):
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": config("BREVO_API_KEY"),
+        "content-type": "application/json"
+    }
+    data = {
+        "sender": {
+            "name": "Portfolio Contact",
+            "email": config("EMAIL_HOST_USER")  # Must match verified Brevo sender
+        },
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "htmlContent": html_content
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    return response.status_code, response.json()
 
 # 💬 Handle Feedback + Send Email
 class FeedbackView(APIView):
@@ -21,34 +43,24 @@ class FeedbackView(APIView):
             email = serializer.validated_data['email']
             message_text = serializer.validated_data.get('message', '')
 
-            # Prepare the email
             subject = "Thanks for your feedback!"
-            message = f"""
-Hi {name},
-
-Thanks for taking the time to give your feedback.
-I truly appreciate your support!
-
-Your Message:
-{message_text}
-
-— Pragin T.
-"""
+            html_content = f"""
+            <p>Hi <strong>{name}</strong>,</p>
+            <p>Thanks for taking the time to give your feedback.<br>
+            I truly appreciate your support!</p>
+            <p><strong>Your Message:</strong><br>{message_text}</p>
+            <p>— Pragin T.</p>
+            """
 
             try:
-                send_mail(
-                    subject,
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,  # from_email
-                    [email],                      # to_email
-                    fail_silently=False,
-                )
-                logger.info(f"Feedback email sent to {email}")
-                return Response({"status": "feedback received and email sent"})
+                status_code, result = send_email_via_brevo(email, subject, html_content)
+                if status_code == 201:
+                    logger.info(f"Feedback email sent to {email}")
+                    return Response({"status": "feedback received and email sent"})
+                else:
+                    logger.error(f"Brevo error: {result}")
+                    return Response({"error": result}, status=500)
 
-            except BadHeaderError:
-                logger.error("Invalid header found when sending email.")
-                return Response({"error": "Invalid header."}, status=400)
             except Exception as e:
                 logger.exception("Email sending failed.")
                 return Response({"error": str(e)}, status=500)
