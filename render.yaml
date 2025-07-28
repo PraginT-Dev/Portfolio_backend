@@ -2,21 +2,19 @@ services:
   - type: web
     name: portfolio-backend
     env: python
-    buildCommand: ./build.sh         # 👈 use build.sh instead of inline steps
+    buildCommand: ./build.sh
     startCommand: gunicorn portfolio_backend.wsgi:application
     envVars:
       - key: SECRET_KEY
-        value: your-super-secret-key      # ✅ change in Render dashboard
+        value: django-insecure-w1f@7!mwk19iis_6*i25*+4v^u7+vt4j7uet+&y+x7w%894-rr
       - key: DEBUG
         value: false
       - key: EMAIL_HOST_USER
-        value: your-email@gmail.com       # ✅ set in dashboard
+        value: pragin.t.developer@gmail.com
       - key: EMAIL_HOST_PASSWORD
-        value: your-email-password        # ✅ set in dashboard
+        value: w1U0haWP5LROTF42
       - key: DATABASE_URL
-        fromDatabase:
-          name: portfolio-db
-          property: connectionString
+        value: postgresql://neondb_owner:npg_AIk9DRW6cLFV@ep-dry-union-a1c7rasd-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 
 databases:
   - name: portfolio-db

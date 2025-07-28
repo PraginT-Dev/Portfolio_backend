@@ -1,9 +1,14 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.core.mail import send_mail
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
+import logging
+
 from .models import *
 from .serializers import *
+
+logger = logging.getLogger(__name__)
 
 # 💬 Handle Feedback + Send Email
 class FeedbackView(APIView):
@@ -14,8 +19,9 @@ class FeedbackView(APIView):
 
             name = serializer.validated_data['name']
             email = serializer.validated_data['email']
+            message_text = serializer.validated_data.get('message', '')
 
-            # Send confirmation email
+            # Prepare the email
             subject = "Thanks for your feedback!"
             message = f"""
 Hi {name},
@@ -23,13 +29,31 @@ Hi {name},
 Thanks for taking the time to give your feedback.
 I truly appreciate your support!
 
+Your Message:
+{message_text}
+
 — Pragin T.
 """
-            send_mail(subject, message, None, [email], fail_silently=False)
-            return Response({"status": "feedback received and email sent"})
+
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,  # from_email
+                    [email],                      # to_email
+                    fail_silently=False,
+                )
+                logger.info(f"Feedback email sent to {email}")
+                return Response({"status": "feedback received and email sent"})
+
+            except BadHeaderError:
+                logger.error("Invalid header found when sending email.")
+                return Response({"error": "Invalid header."}, status=400)
+            except Exception as e:
+                logger.exception("Email sending failed.")
+                return Response({"error": str(e)}, status=500)
 
         return Response(serializer.errors, status=400)
-
 
 # 📄 Public Read APIs
 class SegmentList(generics.ListAPIView):

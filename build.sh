@@ -8,6 +8,3 @@ python manage.py collectstatic --noinput
 
 echo "📦 Running migrations..."
 python manage.py migrate
-
-echo "👤 Creating admin user if not exists..."
-python manage.py create_admin
