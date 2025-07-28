@@ -16,7 +16,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     '0.0.0.0',
-    'portfolio-backend-igmy.onrender.com',
+    'portfolio-backend-2s7t.onrender.com',
 ]
 
 # ✅ Installed apps
@@ -141,7 +141,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # ✅ CSRF trust
 CSRF_TRUSTED_ORIGINS = [
-    'https://portfolio-backend-igmy.onrender.com',
+    'https://portfolio-backend-2s7t.onrender.com',
 ]
 
 # ✅ Secure cookies in production
