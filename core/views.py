@@ -43,13 +43,16 @@ class FeedbackView(APIView):
             email = serializer.validated_data['email']
             message_text = serializer.validated_data.get('message', '')
 
-            subject = "Thanks for your feedback!"
+            subject = "Thanks for connecting with me!"
             html_content = f"""
-            <p>Hi <strong>{name}</strong>,</p>
-            <p>Thanks for taking the time to give your feedback.<br>
-            I truly appreciate your support!</p>
+            <p>Yo <strong>{name}</strong> 😄,</p>
+            <p>Thanks for reaching out — your message just made my inbox 10x cooler!</p>
+            <p>I’ve read your note, smiled a little, and nodded like a wise old owl 🦉.</p>
             <p><strong>Your Message:</strong><br>{message_text}</p>
-            <p>— Pragin T.</p>
+            <p>Thanks, legend! Your message made my day—and possibly increased my dopamine by 5% 📈😂<br>
+            Let’s keep the bytes flowing and the bugs crashing!</p>
+            <p>Catch ya in the debug zone!<br>— Pragin T. 🐞💥</p>
+
             """
 
             try:

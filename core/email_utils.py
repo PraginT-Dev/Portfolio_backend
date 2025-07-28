@@ -10,7 +10,7 @@ def send_email_via_brevo(to_email, subject, html_content):
     }
     data = {
         "sender": {
-            "name": "Portfolio Contact",
+            "name": "404 Not a Boring Email",
             "email": config("EMAIL_HOST_USER")  # must match verified sender
         },
         "to": [{"email": to_email}],
