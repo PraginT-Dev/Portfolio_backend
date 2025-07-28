@@ -5,6 +5,7 @@ from django.conf import settings
 from decouple import config
 import requests
 import logging
+from django.http import JsonResponse
 
 from .models import *
 from .serializers import *
@@ -31,6 +32,7 @@ def send_email_via_brevo(to_email, subject, html_content):
 
     response = requests.post(url, headers=headers, json=data)
     return response.status_code, response.json()
+
 
 # 💬 Handle Feedback + Send Email
 class FeedbackView(APIView):
@@ -67,18 +69,22 @@ class FeedbackView(APIView):
 
         return Response(serializer.errors, status=400)
 
+
 # 📄 Public Read APIs
 class SegmentList(generics.ListAPIView):
     queryset = Segment.objects.all()
     serializer_class = SegmentSerializer
 
+
 class CertificateList(generics.ListAPIView):
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
 
+
 class ProjectList(generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
 
 # 🔄 Grouped Skills by Segment
 class SkillListView(APIView):
@@ -86,3 +92,8 @@ class SkillListView(APIView):
         segments = Segment.objects.prefetch_related('skills').all()
         serializer = SegmentWithSkillsSerializer(segments, many=True, context={'request': request})
         return Response(serializer.data)
+
+
+# 🩺 Health check endpoint for uptime/ping monitoring
+def health_check(request):
+    return JsonResponse({"status": "ok"})

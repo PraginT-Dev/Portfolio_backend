@@ -3,6 +3,7 @@ from .views import (
     FeedbackView,
     SegmentList, CertificateList, ProjectList,
     SkillListView,
+    health_check,
 )
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path('certificates/', CertificateList.as_view(), name='certificates'),
     path('projects/', ProjectList.as_view(), name='projects'),
     path('skills/', SkillListView.as_view(), name='skills'),  # final route for frontend
+    path('health/', health_check, name='health_check'),  # health check route for uptime monitoring
 ]
