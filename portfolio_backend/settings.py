@@ -16,7 +16,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "[::1]",
     "0.0.0.0",
-    "portfolio-backend-2s7t.onrender.com",  # 🔁 update if using Fly.io or custom domain
+    "portfolio-backend-2s7t.onrender.com",  # 🔁 update to Fly.io if needed
 ]
 
 # ✅ Installed apps
@@ -76,7 +76,7 @@ DATABASES = {
     "default": dj_database_url.config(
         default=config("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=True,
     )
 }
 
@@ -94,7 +94,7 @@ TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static files (served via Whitenoise in production)
+# ✅ Static files
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -103,9 +103,14 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# ✅ Email (Brevo)
-DEFAULT_FROM_EMAIL = config("EMAIL_HOST_USER")
-BREVO_API_KEY = config("BREVO_API_KEY")
+# ✅ Email (Gmail SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # ✅ Logging
 LOGGING = {
@@ -132,9 +137,9 @@ LOGGING = {
 # ✅ CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
-# ✅ CSRF (for production frontend domain)
+# ✅ CSRF (adjust for frontend deployment)
 CSRF_TRUSTED_ORIGINS = [
-    "https://portfolio-backend-2s7t.onrender.com",  # 🔁 change if using Fly.io
+    "https://portfolio-backend-2s7t.onrender.com",
 ]
 
 # ✅ Secure cookies for production
@@ -142,7 +147,7 @@ SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 
-# ✅ Proxy SSL header
+# ✅ Proxy header for Render/Fly
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # ✅ Default auto field
