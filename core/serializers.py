@@ -34,10 +34,18 @@ class SkillSerializer(serializers.ModelSerializer):
 class CertificateSerializer(serializers.ModelSerializer):
     segment = serializers.CharField(source='segment.name')  # Show segment name instead of ID
     skills = SkillSerializer(many=True, read_only=True)     # Nested skills list
+    image = serializers.SerializerMethodField()             # Add this line
 
     class Meta:
         model = Certificate
-        fields = ['id', 'title', 'description', 'image','verify_link' , 'created_at', 'segment', 'skills']
+        fields = ['id', 'title', 'description', 'image', 'verify_link', 'created_at', 'segment', 'skills']
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image and hasattr(obj.image, 'url'):
+            return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        return ''
+
 
 class ProjectImageSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
